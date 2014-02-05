@@ -1,0 +1,9 @@
+{
+  "name": "etcd-registry-router",
+  "version": "0.0.0",
+  "description": "Route http requests to services registered in etcd-registry",
+  "dependencies": {
+    "pump": "~0.2.3",
+    "etcd-registry": "~0.3.0"
+  }
+}
