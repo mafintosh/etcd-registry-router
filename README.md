@@ -38,6 +38,8 @@ server.listen(0, function() { // listening on 0 will just give you a free port
 });
 ```
 
+See [example.js](https://github.com/mafintosh/etcd-registry-router/blob/master/example.js) for a working example.
+
 ## License
 
 MIT
