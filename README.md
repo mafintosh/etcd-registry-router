@@ -6,7 +6,7 @@ Route http requests to services registered in etcd-registry
 
 ## Usage
 
-etcd-registry-router is a http server that forwards requests to services
+etcd-registry-router is a http server that forwards requests (and websockets!) to services
 registered in [etcd-registry](https://github.com/mafintosh/etcd-registry).
 
 ``` js
@@ -15,7 +15,7 @@ var server = router('127.0.0.1:4001', function(request, route) {
 	route('http/'+request.headers.host);
 });
 
-server.on('route', function(request, response, service) {
+server.on('route', function(request, service) {
 	console.log('Routing', request.url, 'to', service.name);
 });
 
