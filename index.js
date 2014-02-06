@@ -62,22 +62,28 @@ var router = function(cs, onroute) {
 		});
 
 		pump(request, req);
+		req.on('error', function() {
+			request.destroy();
+		});
 		req.on('response', function(res) {
 			response.writeHead(res.statusCode, res.headers);
 			pump(res, response);
 		});
 	};
 
-	var onerror = function(response, statusCode, message) {
-		response.statusCode = statusCode;
-		response.end(message);
+	var destroyer = function(socket) {
+		return function(err, service) {
+			if (!service) socket.destroy();
+		};
 	};
 
 	var onupgrade = function(request, socket, data) {
-		onroute(request, socket, function(list) {
+		onroute(request, socket, function(list, cb) {
+			if (!cb) cb = destroyer(socket);
 			lookup(list, function(err, service) {
-				if (err || !service) return socket.destroy();
+				if (err || !service) return cb(err);
 				proxyConnection(request, socket, data, service);
+				cb(null, service);
 			});
 		});
 	};
@@ -86,11 +92,12 @@ var router = function(cs, onroute) {
 	server.on('upgrade', onupgrade);
 
 	server.on('request', function(request, response) {
-		onroute(request, response, function(list) {
+		onroute(request, response, function(list, cb) {
+			if (!cb) cb = destroyer(request);
 			lookup(list, function(err, service) {
-				if (err) return onerror(response, 503, err.message.trim()+'\n');
-				if (!service) return onerror(response, 404);
+				if (err || !service) return cb(err);
 				proxyRequest(request, response, service);
+				cb(null, service);
 			});
 		});
 	});
