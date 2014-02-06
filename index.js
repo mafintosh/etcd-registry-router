@@ -3,11 +3,19 @@ var net = require('net');
 var registry = require('etcd-registry');
 var pump = require('pump');
 
+var wrap = function(fn) {
+	return function(request, response, route) {
+		fn(request, route);
+	};
+};
+
 var router = function(cs, onroute) {
 	if (typeof cs === 'function') return router(null, cs);
 
 	var server = http.createServer();
 	var services = registry(cs);
+
+	if (onroute.length === 2) onroute = wrap(onroute);
 
 	var lookup = function(list, cb) {
 		var i = 0;
@@ -66,7 +74,7 @@ var router = function(cs, onroute) {
 	};
 
 	var onupgrade = function(request, socket, data) {
-		onroute(request, function(list) {
+		onroute(request, socket, function(list) {
 			lookup(list, function(err, service) {
 				if (err || !service) return socket.destroy();
 				proxyConnection(request, socket, data, service);
@@ -78,7 +86,7 @@ var router = function(cs, onroute) {
 	server.on('upgrade', onupgrade);
 
 	server.on('request', function(request, response) {
-		onroute(request, function(list) {
+		onroute(request, response, function(list) {
 			lookup(list, function(err, service) {
 				if (err) return onerror(response, 503, err.message.trim()+'\n');
 				if (!service) return onerror(response, 404);
