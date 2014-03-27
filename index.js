@@ -13,7 +13,7 @@ var router = function(cs, onroute) {
 	if (typeof cs === 'function') return router(null, cs);
 
 	var server = http.createServer();
-	var services = registry(cs);
+	var services = typeof cs === 'object' && cs ? cs : registry(cs);
 
 	if (onroute.length === 2) onroute = wrap(onroute);
 
