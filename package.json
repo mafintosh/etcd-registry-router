@@ -1,6 +1,6 @@
 {
   "name": "etcd-registry-router",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Route http requests to services registered in etcd-registry",
   "repository": "git://github.com/mafintosh/etcd-registry-router.git",
   "dependencies": {
