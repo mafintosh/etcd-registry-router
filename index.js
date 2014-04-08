@@ -3,6 +3,8 @@ var net = require('net');
 var registry = require('etcd-registry');
 var pump = require('pump');
 
+var noop = function() {};
+
 var wrap = function(fn) {
 	return function(request, response, route) {
 		fn(request, route);
@@ -78,9 +80,12 @@ var router = function(cs, onroute) {
 	};
 
 	var onupgrade = function(request, socket, data) {
+		socket.on('error', noop);
 		onroute(request, socket, function(list, cb) {
 			if (!cb) cb = destroyer(socket);
+			if (!socket.readable) return cb(new Error('socket is closed'));
 			lookup(list, function(err, service) {
+				if (!socket.readable) return cb(new Error('socket is closed'));
 				if (err || !service) return cb(err);
 				proxyConnection(request, socket, data, service);
 				cb(null, service);
