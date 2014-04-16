@@ -23,6 +23,7 @@ var router = function(cs, onroute) {
 		var i = 0;
 
 		if (!list) return cb();
+		if (typeof list === 'object' && list.hostname && list.port) return cb(null, list);
 		if (!Array.isArray(list)) list = [list];
 		if (!list.length) return cb();
 
