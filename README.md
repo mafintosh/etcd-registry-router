@@ -1,6 +1,6 @@
 # etcd-registry-router
 
-Route http requests to services registered in etcd-registry
+Route http requests to services registered in [etcd-registry](https://github.com/mafintosh/etcd-registry)
 
 	npm install etcd-registry-router
 
