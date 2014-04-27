@@ -12,7 +12,7 @@ registered in [etcd-registry](https://github.com/mafintosh/etcd-registry).
 ``` js
 var router = require('etcd-registry-router');
 var server = router('127.0.0.1:4001', function(request, route) {
-	route(request.headers.host);
+	route(request.headers.host); // instead of a name you can also pass a service object here
 });
 
 server.on('route', function(request, service) {
