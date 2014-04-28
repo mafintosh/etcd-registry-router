@@ -5,6 +5,6 @@
   "repository": "git://github.com/mafintosh/etcd-registry-router.git",
   "dependencies": {
     "pump": "~0.2.3",
-    "etcd-registry": "~1.0.1"
+    "etcd-registry": "~1.1.0"
   }
 }
