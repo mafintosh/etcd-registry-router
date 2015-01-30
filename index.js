@@ -55,6 +55,7 @@ var router = function(cs, onroute) {
 	var proxyRequest = function(request, response, service) {
 		server.emit('route', request, service);
 		request.emit('route', service);
+		delete request.headers.connection; // fixes ECONNRESET issue
 
 		var req = http.request({
 			method: request.method,
